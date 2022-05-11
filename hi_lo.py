@@ -208,3 +208,4 @@ while run:
 
 	# Update the display after each game loop
 	pygame.display.update()
+	
