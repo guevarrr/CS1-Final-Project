@@ -7,168 +7,141 @@ from aesthetics import *
 from button import button
 
  
-# The deck of cards - List of Objects
+# The deck of cards - empty list 
 deck = []
-
-# Loop for every type of suit
+# Loop for every type of suit and every type of card in a suit, add card to deck 
 for suit in suits:
-
-	# Loop for every type of card in a suit
 	for card in cards:
-
-		# Adding the card to the deck
 		deck.append(Card(suit, card))
 
-# Initializing PyGame
+# initializing game loop
 pygame.init()
 
-
-# Setting up the screen and background
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+#screen & background
+screen = pygame.display.set_mode((width, height))
 screen.fill(DARK_GREEN)
 
-# Setting up caption
+#caption
 pygame.display.set_caption("Higher or Lower Game")
 
-# Loading image for the icon
+#icon
 icon = pygame.image.load('icon.jpeg')
-
-# Setting the game icon
 pygame.display.set_icon(icon)
 
-
-# Types of fonts to be used
+#font to use
 small_font = pygame.font.SysFont('comicsans', 20)
-large_font = pygame.font.SysFont('comicsans', 20)
 
-# High and Low Game Buttons
-high_button = button(GREEN,220,370,125,60,'HIGHER')
-high_button.draw(screen)
+# higher and lower buttons
+higher_button = button(GREEN,220,370,125,60,'HIGHER')
+higher_button.draw(screen)
 
-low_button = button(RED,460,370,125,60,text='LOWER')
-low_button.draw(screen)
+lower_button = button(RED,460,370,125,60,text='LOWER')
+lower_button.draw(screen)
 
-
-# Load the card image
-prev_card = pygame.image.load(r'./cards/card_cover.png')
-
-# Scale the loaded image 
-prev_card = pygame.transform.scale(prev_card , (100,160))
-
-# Choose the starting card from the deck
+#choose card
 current_card = random.choice(deck)
-
-# Keep choosing until it is not the highest or lowest
 while current_card.value == "A" or current_card.value == "K":
 	current_card = random.choice(deck)
+	
+#previous card- just cover
+card_before = pygame.image.load(r'./cards/card_cover.png')
+card_before = pygame.transform.scale(card_before , (100,160))
 
-# Load the card image   
-cur_card =  pygame.image.load(r'./cards/' + current_card.value + current_card.suit_type[0] + '.png')
+#current card
+card_current =  pygame.image.load(r'./cards/' + current_card.value + current_card.suit_type[0] + '.png')
+card_current = pygame.transform.scale(card_current , (100,160))
 
-# Scale the loaded card image
-cur_card = pygame.transform.scale(cur_card , (100,160))
+#next card- just cover
+card_after =  pygame.image.load(r'./cards/card_cover.png')
+card_after = pygame.transform.scale(card_after , (100,160))
 
-# Remove the card from the deck
+#remove the card
 deck.remove(current_card)
 
-# Loading the card image
-next_card =  pygame.image.load(r'./cards/card_cover.png')
-
-# Scaling the loaded image
-next_card = pygame.transform.scale(next_card , (100,160))
-
-# Number of chances left
-chances = 5
-
-# The current score
+#scoreboard
+guesses = 5
 score = 0
-
-# User's choice initialized
 choice = -1
 
-# Used to stop game functioning, if True
+#game logistics
 over = False
-
 run = True
-high_button = button(GREEN,220,370,125,60,'HIGHER')
-low_button = button(RED,460,370,125,60,text='LOWER')
 
-# The GAME LOOP
+#button creation
+higher_button = button(GREEN,220,370,125,60,'HIGHER')
+lower_button = button(RED,460,370,125,60,text='LOWER')
+
+# LETS PLAY!! 
 while run:
 
-	# Displaying scoreboard
+	#scoreboard
 	pygame.draw.rect(screen, BLACK, [270, 40, 255, 90])
 	score_text = small_font.render("YOUR SCORE = "+str(score), True, WHITE)
 	score_text_rect = score_text.get_rect()
-	score_text_rect.center = (WIDTH//2, 70)
+	score_text_rect.center = (width//2, 70)
 
+	guesses_text = small_font.render("GUESSES LEFT = "+str(guesses), True, WHITE)
+	guesses_text_rect = guesses_text.get_rect()
+	guesses_text_rect.center = (width//2, 100)  
 
-	chances_text = small_font.render("GUESSES LEFT = "+str(chances), True, WHITE)
-	chances_text_rect = chances_text.get_rect()
-	chances_text_rect.center = (WIDTH//2, 100)  
-	
-	#score-board texts
 	screen.blit(score_text, score_text_rect)
-	screen.blit(chances_text, chances_text_rect)
+	screen.blit(guesses_text, guesses_text_rect)
 	
 	#3 piles, previous card all the way to the left, next card in the center, and the new pile to the right #
-	screen.blit(prev_card, (MARGIN_LEFT,MARGIN_TOP))
-	screen.blit(cur_card, (MARGIN_LEFT+120, MARGIN_TOP))
-	screen.blit(next_card, (MARGIN_LEFT+240, MARGIN_TOP))   
+	screen.blit(card_before, (left_margin,top_margin))
+	screen.blit(card_current, (left_margin+120, top_margin))
+	screen.blit(card_after, (left_margin+240, top_margin))   
 	
 	
-	# Tracking the mouse movements
+	#track mouse
 	mouse = pygame.mouse.get_pos()
 
-	#Button Selection
-	if high_button.isOver(mouse): 
-		high_button = button(LIGHT_GREEN,220,370,125,60,'HIGHER')
-		high_button.draw(screen)
+	#button selection - use functions from button class 
+	if higher_button.hover(mouse): 
+		higher_button = button(LIGHT_GREEN,220,370,125,60,'HIGHER')
+		higher_button.draw(screen)
 	else: 
-		high_button = button(GREEN,220,370,125,60,'HIGHER')
-		high_button.draw(screen)
-	if low_button.isOver(mouse):
-		low_button = button(LIGHT_RED,460,370,125,60,text='LOWER')
-		low_button.draw(screen)
+		higher_button = button(GREEN,220,370,125,60,'HIGHER')
+		higher_button.draw(screen)
+	if lower_button.hover(mouse):
+		lower_button = button(LIGHT_RED,460,370,125,60,text='LOWER')
+		lower_button.draw(screen)
 	else: 
-		low_button = button(RED,460,370,125,60,text='LOWER')
-		low_button.draw(screen)
+		lower_button = button(RED,460,370,125,60,text='LOWER')
+		lower_button.draw(screen)
    
-	# Loop events occuring inside the game window 
+	#loop of events
 	for event in pygame.event.get():
 
-		# Qutting event
+		#exit game
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
 
-		#MOUSE-CLICK
+		#click
 		if not over and event.type == pygame.MOUSEBUTTONDOWN:
-			if high_button.isOver(mouse):
+			if higher_button.hover(mouse):
 				choice = 1 
-			if low_button.isOver(mouse):
+			if lower_button.hover(mouse):
 				choice = 0 
 
-			# Finish the game if the deck is finished
+			# finish the game if the deck is finished
 			if len(deck) == 1:
 				over = True
-
-			# If a valid choice, the game logic 
 			if choice != -1:    
-
-				# Change current card to previous
+				#current card to previous
 				previous_card = current_card
-				prev_card = pygame.image.load(r'./cards/' + previous_card.value + previous_card.suit_type[0] + '.png')
-				prev_card = pygame.transform.scale(prev_card , (100,160))
-				 
-				# Set up the current card
+				card_before = pygame.image.load(r'./cards/' + previous_card.value + previous_card.suit_type[0] + '.png')
+				card_before = pygame.transform.scale(card_before , (100,160))
+				
+				#current card
 				current_card = random.choice(deck)
 				deck.remove(current_card)
+				#card image
+				card_current =  pygame.image.load(r'./cards/' + current_card.value + current_card.suit_type[0] + '.png')
+				card_current = pygame.transform.scale(card_current , (100,160))
 
-				cur_card =  pygame.image.load(r'./cards/' + current_card.value + current_card.suit_type[0] + '.png')
-				cur_card = pygame.transform.scale(cur_card , (100,160))
-
-				# Check the result, that is, High or Low
+				#are results higher or lower, do they match guess?
 				if cards_values[current_card.value] > cards_values[previous_card.value]:
 					result = 1
 				elif cards_values[current_card.value] < cards_values[previous_card.value]:
@@ -176,24 +149,22 @@ while run:
 				else:
 					result = -1    
 
-				# Manage the game variables
+				#change the scoreboard
 				if result == -1:
 					continue
 				elif result == choice:
 					score = score + 1
 				else:
-					chances = chances - 1      
+					guesses = guesses - 1      
 
-				# End the game if chances are finished
-				if chances == 0:
+				#if chances finished: end game 
+				if guesses == 0:
 					over = True
 
-				# Reset the choice
+				#reset choices 
 				choice = -1
 				
-				
-
-	# If the game is finished, display the final score
+	#if the game is finished, display the final score 
 	if over == True:
 		screen.fill(PURPLE)
 		pygame.draw.rect(screen, BLACK, [270, 40, 255, 90])
@@ -201,11 +172,10 @@ while run:
 		score_text_rect = score_text.get_rect()
 		score_congrats = small_font.render('Great Job!',True, WHITE)
 		score_congrats_rect = score_congrats.get_rect()
-		score_text_rect.center = (WIDTH//2, 70)
-		score_congrats_rect.center = (WIDTH//2, 100) 
+		score_text_rect.center = (width//2, 70)
+		score_congrats_rect.center = (width//2, 100) 
 		screen.blit(score_text, score_text_rect)
 		screen.blit(score_congrats,score_congrats_rect)
 
-	# Update the display after each game loop
+	#update display after loops finished 
 	pygame.display.update()
-	
