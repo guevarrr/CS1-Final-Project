@@ -24,10 +24,6 @@ screen.fill(DARK_GREEN)
 #caption
 pygame.display.set_caption("Higher or Lower Game")
 
-#icon
-icon = pygame.image.load('icon.jpeg')
-pygame.display.set_icon(icon)
-
 #font to use
 small_font = pygame.font.SysFont('comicsans', 20)
 
