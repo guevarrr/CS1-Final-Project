@@ -23,10 +23,11 @@ class button:
             text = font.render(self.text, 1, BLACK)
             screen.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2))) #centers the text for the button 
 		
-    def isOver(self, mouse): #is the mouse over the top of the value 
+    def hover(self, mouse): #is the mouse over the top of the value 
         #Pos is the mouse position or a tuple of (x,y) coordinates
         if mouse[0] > self.x and mouse[0] < self.x + self.width:
             if mouse[1] > self.y and mouse[1] < self.y + self.height:
                 return True
         return False
-  
+        
+
